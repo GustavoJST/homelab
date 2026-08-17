@@ -78,6 +78,13 @@ resource "talos_machine" "control_plane" {
 
   # Let talos_cluster perform Kubernetes upgrades safely.
   ignore_kubernetes_upgrade_drift = true
+
+  # When removing a machine, gracefully shutdown and remove it from the cluster membership.
+  on_destroy = {
+    reset    = true
+    graceful = true
+    reboot   = false
+  }
 }
 
 resource "talos_machine" "workers" {
@@ -95,6 +102,13 @@ resource "talos_machine" "workers" {
 
   # Let talos_cluster perform Kubernetes upgrades safely.
   ignore_kubernetes_upgrade_drift = true
+
+  # When removing a machine, gracefully shutdown and remove it from the cluster membership.
+  on_destroy = {
+    reset    = true
+    graceful = true
+    reboot   = false
+  }
 }
 
 resource "talos_cluster" "this" {
