@@ -1,0 +1,20 @@
+version: '3'
+
+tasks:
+  cluster:start:
+    desc: "Starts the cluster"
+    cmds:
+      - |
+        virsh -c qemu:///system list --all --name \
+          | xargs -I {} virsh -c qemu:///system start {}
+
+  cluster:shutdown:
+    desc: "Stops the cluster"
+    cmds:
+      - |
+        virsh -c qemu:///system list --all --name \
+          | xargs -I {} virsh -c qemu:///system shutdown {}
+
+
+
+
