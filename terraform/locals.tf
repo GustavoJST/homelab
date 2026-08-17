@@ -15,9 +15,29 @@ locals {
   talos_schematic_id    = "d9ff89777e246792e7642abd3220a616afb4e49822382e4213a2e528ab826fe5"
   talos_installer_image = "factory.talos.dev/metal-installer/${local.talos_schematic_id}:v${local.talos_version}"
 
-  control_plane = {
-    name = "${local.cluster_name}-controlplane-1"
-    mac  = "52:54:00:af:ea:d4"
-    ip   = "10.0.0.10"
-  }
+  control_plane = [
+    {
+      name   = "${local.cluster_name}-controlplane-1"
+      mac    = "52:54:00:af:ea:d4"
+      ip     = "10.0.0.10"
+      cpu    = 2
+      memory = 2048
+      install_disk_size = 15
+    }
+  ]
+
+  workers = [
+    {
+      name   = "${local.cluster_name}-worker-1"
+      mac    = "52:54:00:35:7c:ed"
+      ip     = "10.0.0.11"
+      cpu    = 2
+      memory = 2048
+      install_disk_size = 15
+    }
+  ]
+
+  nodes             = concat(local.control_plane, local.workers)
+  node_ips          = [for node in local.nodes : node.ip]
+  control_plane_ips = [for node in local.control_plane : node.ip]
 }

@@ -16,10 +16,10 @@ resource "libvirt_network" "homelab_network" {
       netmask = "255.255.255.0"
       dhcp = {
         hosts = [
-          {
-            mac  = local.control_plane.mac
-            ip   = local.control_plane.ip
-            name = local.control_plane.name
+          for node in local.nodes : {
+            mac  = node.mac
+            ip   = node.ip
+            name = node.name
           }
         ]
         ranges = [

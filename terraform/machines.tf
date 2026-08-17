@@ -1,9 +1,13 @@
 
-resource "libvirt_domain" "cluster_controlplane" {
-  name        = local.control_plane.name
-  memory      = 2048
+resource "libvirt_domain" "cluster_nodes" {
+  for_each = {
+    for machine in local.nodes : machine.name => machine
+  }
+
+  name        = each.key
+  memory      = each.value.memory
   memory_unit = "MiB"
-  vcpu        = 2
+  vcpu        = each.value.cpu
   type        = "kvm"
   running     = true
 
@@ -76,8 +80,8 @@ resource "libvirt_domain" "cluster_controlplane" {
         device = "disk"
         source = {
           volume = {
-            volume = libvirt_volume.controlplane_install_disk.name
-            pool   = libvirt_volume.controlplane_install_disk.pool
+            volume = libvirt_volume.node_install_volumes[each.key].name
+            pool   = libvirt_volume.node_install_volumes[each.key].pool
           }
         }
         target = {
@@ -112,7 +116,7 @@ resource "libvirt_domain" "cluster_controlplane" {
     interfaces = [
       {
         mac = {
-          address = local.control_plane.mac
+          address = each.value.mac
         }
         model = {
           type = "virtio"

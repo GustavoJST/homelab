@@ -63,10 +63,13 @@ resource "libvirt_volume" "talos_boot_iso" {
 # New persistent disk for the ISO-based installation flow. It has no backing
 # store, so changing Talos boot media or the desired OS version cannot replace
 # it or invalidate a QCOW2 backing chain.
-resource "libvirt_volume" "controlplane_install_disk" {
-  name     = "controlplane-1-install-disk.qcow2"
+resource "libvirt_volume" "node_install_volumes" {
+  for_each = {
+    for machine in local.nodes : machine.name => machine
+  }
+  name     = "${each.key}-install-disk.qcow2"
   pool     = "default"
-  capacity = 20 * 1024 * 1024 * 1024 # 20 GB
+  capacity = each.value.install_disk_size * 1024 * 1024 * 1024
 
   target = {
     format = {
