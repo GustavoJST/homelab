@@ -4,6 +4,9 @@ resource "libvirt_domain" "cluster_nodes" {
     for machine in local.nodes : machine.name => machine
   }
 
+  # A new VM must not boot until dnsmasq has its fixed-address reservation.
+  depends_on = [terraform_data.dhcp_host]
+
   name        = each.key
   memory      = each.value.memory
   memory_unit = "MiB"
