@@ -31,10 +31,18 @@ locals {
       name   = "${local.cluster_name}-worker-1"
       mac    = "52:54:00:35:7c:ed"
       ip     = "10.0.0.11"
-      cpu    = 2
-      memory = 2048
+      cpu    = 4
+      memory = 6144
       install_disk_size = 15
-    }
+    },
+    # {
+    #   name   = "${local.cluster_name}-worker-2"
+    #   mac    = "52:54:00:e7:df:6b"
+    #   ip     = "10.0.0.12"
+    #   cpu    = 3
+    #   memory = 6144
+    #   install_disk_size = 15
+    # }
   ]
 
   nodes             = concat(local.control_plane, local.workers)
